@@ -15,33 +15,38 @@
     <!--Invocar al servicio web-->
         <%-- start web service invocation --%><hr/>
     <%
-    try {
-	jaxws.SWConvertTemps_Service service = new jaxws.SWConvertTemps_Service();
-	jaxws.SWConvertTemps port = service.getSWConvertTempsPort();
-	 // TODO initialize WS operation arguments here
-	double gCent = 0.0d;
-	// TODO process result here
-	java.lang.Double result = port.convCentAFahr(gCent);
-	out.println("Result = "+result);
-    } catch (Exception ex) {
-	// TODO handle custom exceptions here
-    }
-    %>
-    <%-- end web service invocation --%><hr/>
-    <%-- start web service invocation --%><hr/>
-    <%
-    try {
-	jaxws.SWConvertTemps_Service service = new jaxws.SWConvertTemps_Service();
-	jaxws.SWConvertTemps port = service.getSWConvertTempsPort();
-	 // TODO initialize WS operation arguments here
-	double gFahr = 0.0d;
-	// TODO process result here
-	java.lang.Double result = port.convFahrACent(gFahr);
-	out.println("Result = "+result);
-    } catch (Exception ex) {
-	// TODO handle custom exceptions here
-    }
-    %>
+            String sctGrados = request.getParameter("ctGrados");
+            if (sctGrados != null && !sctGrados.isEmpty()) {
+                double nGrados = 0.0;
+                jaxws.SWConvertTemps_Service service;
+                jaxws.SWConvertTemps port;
+
+                try {
+                    // Crear un objeto de la clase que implementa el servicio
+                    service = new jaxws.SWConvertTemps_Service();
+                    port = service.getSWConvertTempsPort();
+                    // Obtener el valor numerico escrito en la caja de texto
+                    nGrados = Double.parseDouble(sctGrados);
+                    // Realizar la conversión invocando al método correspondiente
+                    // del objeto port de tipo SWConverTemps
+                    String convertir = request.getParameter("bgGrados");
+                    if (convertir.compareTo("aFahr")== 0){
+                        nGrados = port.convCentAFahr(nGrados);
+                    }
+                    if (convertir.compareTo("aCent")== 0){
+                        nGrados = port.convFahrACent(nGrados);
+                    }
+                    //mostrar el resultado en la caja de texto
+                    Double objGrados = nGrados;
+                    session.setAttribute("result", objGrados);
+                } catch (NumberFormatException ex){
+                    System.out.println("Dato grados incorrecto\n");
+                }
+                catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        %>
     <%-- end web service invocation --%>
     <hr/>
     <hr/>
